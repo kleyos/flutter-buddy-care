@@ -1,5 +1,5 @@
 import 'package:buddy_care/models/account-model.dart';
-import 'package:buddy_care/services/api/fb-api.dart';
+import 'package:buddy_care/services/api/user-api.dart';
 import 'package:buddy_care/services/prefs-service.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
@@ -33,7 +33,7 @@ class FBScreenPresenter {
 
   void doLogin(token) async {
     try {
-      Account user = await FBApi().requestProfile(token);
+      Account user = await UserApi().requestProfile(token);
       PrefsService().storeSession(user);
       _view.onActionSuccess(user);
     } catch (e) {

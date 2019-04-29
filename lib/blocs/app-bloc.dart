@@ -1,43 +1,44 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:buddy_care/blocs/bloc-provider.dart';
+import 'package:buddy_care/services/api/post-api.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:buddy_care/models/post.dart';
 
+class ApplicationBloc implements BlocBase {
+  static ApplicationBloc _singleton;
+
+
+  factory ApplicationBloc() {
+    if (_singleton != null) {
+      return _singleton;
+    }
+    _singleton = ApplicationBloc._internal();
+    return _singleton;
+  }
+
+  ApplicationBloc._internal();
+
+
+
+  @override
+  void dispose() {
+    print('dispose Application block');
+  }
+}
+
+
 class BuddyCareBLoC {
-  final String apiURL = 'https://buddy-care.herokuapp.com/api/v1';
-  var _posts = <Post>[];
   Map<String, dynamic> res;
   Stream<UnmodifiableListView<Post>> get posts => _postSubject.stream;
 
   final _postSubject = BehaviorSubject<UnmodifiableListView<Post>>();
 
   BuddyCareBLoC() {
-    _getUserPosts(5).then((res) => {
-      _postSubject.add(UnmodifiableListView(_posts))
+    PostApi().getPosts().then((_res) => {
+      _postSubject.add(UnmodifiableListView(_res))
     });
   }
 
-  Future<List<Post>> _getPosts() async {
-    final response = await http.get('$apiURL/cards');
-    if (response.statusCode == 200) {
-      _posts = List.from(json.decode(response.body)['cards']).map((p) => Post.fromMap(p)).toList();
-      return _posts;
-    } else {
-      print("Request failed with status: ${response.statusCode}.");
-    }
-    return [];
-  }
 
-  Future<List<Post>> _getUserPosts(int userId) async {
-    final response = await http.get('$apiURL/users/$userId/cards');
-    if (response.statusCode == 200) {
-      _posts = List.from(json.decode(response.body)['cards']).map((p) => Post.fromMap(p)).toList();
-      return _posts;
-    } else {
-      print("Request failed with status: ${response.statusCode}.");
-    }
-    return [];
-  }
 }

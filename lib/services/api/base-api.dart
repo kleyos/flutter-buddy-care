@@ -1,40 +1,40 @@
+
+import 'dart:io';
+
 import 'package:buddy_care/services/env-service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 export 'dart:convert';
 
-const releaseHost = 'https://google.com';
-const stagingHost = 'https://google.com';
+const releaseHost = 'https://buddy-care.herokuapp.com/api/v1';
+const stagingHost = 'https://buddy-care.herokuapp.com/api/v1';
 
 class API {
   static String host;
 
   /// Basic **POST** request
-  static Future<Map<String, Object>> post({
-    @required String url,
-    Map<String, dynamic> body: const {},
-    bool debugLogBody: false,
-  }) async {
-    final resp = await _client.post(
-      '$_host$url',
-      body: json.encode(body),
-      headers: _headers,
-    );
-    _printRequestDetails(resp, debugLogBody);
-    return _extractResponse(resp);
-  }
+
+  Future<Map<String, dynamic>> post({
+      @required String url,
+      Map<String, dynamic> headers,
+      Map<String, dynamic> body: const {},
+      bool debugLogBody: false,
+    }) async {
+      final resp = await _client.post(
+        '$_host$url',
+        body: json.encode(body),
+        headers: headers,
+      );
+      _printRequestDetails(resp, debugLogBody);
+      return _extractResponse(resp);
+    }
 
   /// Basic **GET** request
-  ///
-  /// [customHost] - set to `true` if you need to make call with different host (e.g. for Firebase requests) and provide full [url]
-  ///
-  /// [debugLogBody] - set `true` to see response body in debug console
-  ///
-  /// [params] - get params, omit the first **'?' sign** since it already presents
-  static Future<Map<String, Object>> get({
+
+  Future<Map<String, dynamic>> get({
     @required String url,
+    Map<String, dynamic> headers,
     String params,
     debugLogBody: false,
     customHost: false,
@@ -44,16 +44,45 @@ class API {
 
     final resp = await _client.get(
       reqUrl,
-      headers: _headers,
+      headers: headers,
     );
 
     _printRequestDetails(resp, debugLogBody);
     return _extractResponse(resp);
   }
 
-  static const _ctHeader = {
-    'Content-Type': 'application/json',
-  };
+  /// Basic **PUT** request
+
+  Future<Map<String, dynamic>> put({
+    @required String url,
+    Map<String, dynamic> headers,
+    Map<String, dynamic> body: const {},
+    bool debugLogBody: false,
+  }) async {
+    final resp = await _client.put(
+      '$_host$url',
+      body: json.encode(body),
+      headers: headers,
+    );
+    _printRequestDetails(resp, debugLogBody);
+    return _extractResponse(resp);
+  }
+
+  /// Basic **DELETE** request
+
+  Future<Map<String, dynamic>> delete({
+    @required String url,
+    Map<String, dynamic> headers,
+    bool debugLogBody: false,
+  }) async {
+    final resp = await _client.delete(
+      '$_host$url',
+      headers: headers,
+    );
+    _printRequestDetails(resp, debugLogBody);
+    return _extractResponse(resp);
+  }
+
 
   static final http.Client _client = http.Client();
 
@@ -61,9 +90,18 @@ class API {
     ? releaseHost
     : host ?? stagingHost;
 
-  static Map<String, String> get _headers => _ctHeader;
 
-  static Map<String, Object> _extractResponse(http.Response response) {
+  Map<String, String> get header => {
+    HttpHeaders.contentTypeHeader: 'application/json',
+  };
+
+  Map<String, String> authHeader(accessToken) =>
+    {
+      HttpHeaders.contentTypeHeader: 'application/json',
+      HttpHeaders.authorizationHeader: "Bearer $accessToken",
+    };
+
+  Map<String, Object> _extractResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
         return json.decode(response.body);
