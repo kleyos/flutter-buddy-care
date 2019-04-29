@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "895706361538",
+    "firebase_url": "https://buddycare-aa605.firebaseio.com",
+    "project_id": "buddycare-aa605",
+    "storage_bucket": "buddycare-aa605.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:895706361538:android:6ff491b17115d905",
+        "android_client_info": {
+          "package_name": "com.litslink.buddyCare.flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "895706361538-h9vn5si19khaiaj9smk1vqdthta0k0q5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBi8bdlg6GbK0fzuQtpeV_s8ljnijPNJ04"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "895706361538-h9vn5si19khaiaj9smk1vqdthta0k0q5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "895706361538-ujj4idqvu2cc0qnbeejgpjqmck8i2s7k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.litslink.buddyCare.flutter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
