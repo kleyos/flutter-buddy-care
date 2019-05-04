@@ -1,7 +1,6 @@
 import 'package:buddy_care/login/auth-state.dart';
 import 'package:buddy_care/login/fb-provider.dart';
 import 'package:buddy_care/models/account-model.dart';
-import 'package:buddy_care/ui/common/main-button.dart';
 import 'package:flutter/material.dart';
 
 class _FBButtonState extends State<FBButton> with FBScreenProvider {
@@ -30,15 +29,25 @@ class _FBButtonState extends State<FBButton> with FBScreenProvider {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MainButton(
-      key: Key('fb_btn'),
-      text: 'LOGIN WITH FACEBOOK',
-      bgColor: Colors.blueAccent,
-      isLoading: _loading,
-      onTap: _onFBBtnTap,
-    );
-  }
+  Widget build(BuildContext context) => OutlineButton.icon(
+    key: Key('fb_btn'),
+    label: _loading
+      ? CircularProgressIndicator()
+      : Text(
+          'Login with FACEBOOK',
+          style: TextStyle(
+            fontSize: 16
+          ),
+        ),
+    textColor: Colors.white,
+    padding: const EdgeInsets.all(12.0),
+    icon: Image.asset('assets/f.png', color: Colors.white, height: 30,),
+    onPressed: _loading ? null : _onFBBtnTap,
+    borderSide: const BorderSide(color: Colors.white, width: 2.0),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(26)),
+    ),
+  );
 }
 
 class FBButton extends StatefulWidget {

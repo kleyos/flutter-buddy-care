@@ -1,12 +1,14 @@
+
+import 'package:buddy_care/ui/home/home-screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
+
 import 'package:buddy_care/blocs/app-bloc.dart';
 import 'package:buddy_care/blocs/bloc-provider.dart';
 import 'package:buddy_care/blocs/notif-bloc.dart';
-import 'package:buddy_care/models/post.dart';
+import 'package:buddy_care/models/account-model.dart';
 import 'package:buddy_care/services/prefs-service.dart';
-import 'package:flutter/material.dart';
-import 'dart:collection';
-
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:buddy_care/ui/login/login-screen.dart';
 
 void main() async {
   final prefsInstance = await SharedPreferences.getInstance();
@@ -20,23 +22,27 @@ class MyApp extends StatelessWidget {
     Key key,
   }): super(key: key);
 
+
 @override
   Widget build(BuildContext context) {
     return BlocProvider<ApplicationBloc>(
       bloc: ApplicationBloc(),
       child: MaterialApp(
-      title: 'BuddyCare',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-      ),
-      home: MyHomePage(title: 'Buddy Care'),
-    )
-    );}
+        title: 'BuddyCare',
+        theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
+        ),
+        home: RootPage(title: 'Buddy Care'),
+        routes: <String, WidgetBuilder>{
+          '/root': (BuildContext context) => RootPage(),
+          '/home': (BuildContext context) => HomeScreen(bloc: ApplicationBloc()),
+        },
+      )
+    );
+  }
 }
 
-
-
-class _MyHomePageState extends State<MyHomePage> {
+class _RootPageState extends State<RootPage> {
   ApplicationBloc _bloc;
 
   @override
@@ -50,40 +56,22 @@ class _MyHomePageState extends State<MyHomePage> {
     print('---------- _onReceivePushNotification ---------- \n $message');
   }
 
-  Widget _buildItem(Post post) =>
-    Container(
-      padding: EdgeInsets.symmetric(vertical: 10.0),
-      child: Text(post.text),
-    );
-
 
   @override
   Widget build(BuildContext context) {
     _bloc = BlocProvider.of<ApplicationBloc>(context);
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: StreamBuilder<UnmodifiableListView<Post>>(
-        stream: _bloc.buddyCareBLoC.posts,
-        initialData: UnmodifiableListView<Post>([]),
-        builder: (context, snapshot) =>
-          ListView(
-            children: snapshot.data.map(_buildItem).toList(),
-          )
-      )
-    );
+    return Account.current != null
+      ? HomeScreen(bloc: _bloc,)
+      : LoginScreen();
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title }) : super(key: key);
+class RootPage extends StatefulWidget {
+  RootPage({Key key, this.title }) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _RootPageState createState() => _RootPageState();
 }
 
