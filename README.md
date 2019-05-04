@@ -1,2 +1,2 @@
 # flutter-buddy-care
-Implementation of BuddyCare app on flutter framwork
+Implementation of BuddyCare app with flutter framwork
