@@ -1,4 +1,5 @@
 
+import 'package:buddy_care/login/auth-state.dart';
 import 'package:buddy_care/ui/home/home-screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -36,13 +37,23 @@ class MyApp extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           '/root': (BuildContext context) => RootPage(),
           '/home': (BuildContext context) => HomeScreen(bloc: ApplicationBloc()),
+          '/login': (BuildContext context) => LoginScreen(),
         },
       )
     );
   }
 }
 
-class _RootPageState extends State<RootPage> {
+class _RootPageState extends State<RootPage> implements AuthStateListener {
+  _RootPageState() {
+    AuthStateProvider()..subscribe(this);
+  }
+
+  @override
+  void onAuthStateChanged(AuthState state) {
+    setState(() {});
+  }
+
   ApplicationBloc _bloc;
 
   @override
